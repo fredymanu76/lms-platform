@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  /* Color tokens - Modern workspace feel */
+  --color-background: oklch(100% 0 0);
+  --color-foreground: oklch(9% 0 0);
+  --color-card: oklch(100% 0 0);
+  --color-card-foreground: oklch(9% 0 0);
+  --color-popover: oklch(100% 0 0);
+  --color-popover-foreground: oklch(9% 0 0);
+  --color-primary: oklch(25.35% 0.038 264.45);
+  --color-primary-foreground: oklch(98% 0 0);
+  --color-secondary: oklch(96.5% 0 0);
+  --color-secondary-foreground: oklch(9% 0 0);
+  --color-muted: oklch(96.5% 0 0);
+  --color-muted-foreground: oklch(45.9% 0.006 285.82);
+  --color-accent: oklch(96.5% 0 0);
+  --color-accent-foreground: oklch(9% 0 0);
+  --color-destructive: oklch(57.6% 0.227 27.33);
+  --color-destructive-foreground: oklch(98% 0 0);
+  --color-border: oklch(90.2% 0.004 285.82);
+  --color-input: oklch(90.2% 0.004 285.82);
+  --color-ring: oklch(25.35% 0.038 264.45);
+
+  /* Radius - Softer, modern feel */
+  --radius-lg: 0.5rem;
+  --radius-md: calc(var(--radius-lg) - 2px);
+  --radius-sm: calc(var(--radius-lg) - 4px);
+
+  /* Chart colors for dashboards */
+  --color-chart-1: oklch(60% 0.15 145);
+  --color-chart-2: oklch(70% 0.15 210);
+  --color-chart-3: oklch(65% 0.15 330);
+  --color-chart-4: oklch(75% 0.12 60);
+  --color-chart-5: oklch(68% 0.18 280);
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: oklch(14% 0.004 285.82);
+    --color-foreground: oklch(98% 0 0);
+    --color-card: oklch(14% 0.004 285.82);
+    --color-card-foreground: oklch(98% 0 0);
+    --color-popover: oklch(14% 0.004 285.82);
+    --color-popover-foreground: oklch(98% 0 0);
+    --color-primary: oklch(77.84% 0.086 264.45);
+    --color-primary-foreground: oklch(25.35% 0.038 264.45);
+    --color-secondary: oklch(22.7% 0.006 285.82);
+    --color-secondary-foreground: oklch(98% 0 0);
+    --color-muted: oklch(22.7% 0.006 285.82);
+    --color-muted-foreground: oklch(64.9% 0.012 285.82);
+    --color-accent: oklch(22.7% 0.006 285.82);
+    --color-accent-foreground: oklch(98% 0 0);
+    --color-destructive: oklch(59.2% 0.227 27.33);
+    --color-destructive-foreground: oklch(98% 0 0);
+    --color-border: oklch(22.7% 0.006 285.82);
+    --color-input: oklch(22.7% 0.006 285.82);
+    --color-ring: oklch(77.84% 0.086 264.45);
+
+    --color-chart-1: oklch(65% 0.15 145);
+    --color-chart-2: oklch(75% 0.15 210);
+    --color-chart-3: oklch(70% 0.15 330);
+    --color-chart-4: oklch(80% 0.12 60);
+    --color-chart-5: oklch(73% 0.18 280);
+  }
+}
+
+/* Base styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Modern workspace utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Workspace-specific patterns */
+  .workspace-card {
+    @apply bg-card border border-border/50 rounded-lg shadow-sm;
+  }
+
+  .workspace-section {
+    @apply border-b border-border/50 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0;
+  }
+}
