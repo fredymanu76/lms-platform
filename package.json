@@ -25,6 +25,7 @@
     "framer-motion": "^12.27.1",
     "lucide-react": "^0.562.0",
     "next": "16.1.4",
+    "openai": "^6.16.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-email": "^5.2.5",
