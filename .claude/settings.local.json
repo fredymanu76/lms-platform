@@ -4,7 +4,12 @@
       "Bash(test:*)",
       "Bash(npm run build:*)",
       "Bash(git rev-parse:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git config:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git push:*)",
+      "Bash(npm install:*)"
     ]
   }
 }
