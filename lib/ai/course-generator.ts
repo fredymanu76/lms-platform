@@ -1,7 +1,7 @@
-import OpenAI from 'openai'
+import Anthropic from '@anthropic-ai/sdk'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
 export interface CourseOutlineRequest {
@@ -132,22 +132,32 @@ Return ONLY valid JSON matching this schema:
 }`
 
     try {
-      const response = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: userPrompt }
-        ],
+      const message = await anthropic.messages.create({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 8000,
         temperature: 0.7,
-        response_format: { type: 'json_object' },
+        system: SYSTEM_PROMPT,
+        messages: [
+          {
+            role: 'user',
+            content: userPrompt
+          }
+        ]
       })
 
-      const content = response.choices[0].message.content
-      if (!content) {
-        throw new Error('No content generated')
+      const content = message.content[0]
+      if (content.type !== 'text') {
+        throw new Error('Unexpected response type from Claude')
       }
 
-      const outline = JSON.parse(content) as CourseOutline
+      // Extract JSON from the response (Claude might wrap it in markdown)
+      let jsonText = content.text
+      const jsonMatch = jsonText.match(/\{[\s\S]*\}/)
+      if (jsonMatch) {
+        jsonText = jsonMatch[0]
+      }
+
+      const outline = JSON.parse(jsonText) as CourseOutline
 
       // Validate basic structure
       if (!outline.title || !outline.modules || outline.modules.length === 0) {
@@ -155,9 +165,14 @@ Return ONLY valid JSON matching this schema:
       }
 
       return outline
-    } catch (error) {
+    } catch (error: any) {
       console.error('AI course generation error:', error)
-      throw new Error('Failed to generate course outline. Please try again.')
+      console.error('Error details:', {
+        message: error?.message,
+        status: error?.status,
+        type: error?.type,
+      })
+      throw new Error(`Failed to generate course outline: ${error?.message || 'Unknown error'}`)
     }
   },
 
@@ -186,25 +201,35 @@ Generate an improved version of this lesson in JSON format matching this schema:
 }`
 
     try {
-      const response = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: prompt }
-        ],
+      const message = await anthropic.messages.create({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 4000,
         temperature: 0.7,
-        response_format: { type: 'json_object' },
+        system: SYSTEM_PROMPT,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
       })
 
-      const content = response.choices[0].message.content
-      if (!content) {
-        throw new Error('No content generated')
+      const content = message.content[0]
+      if (content.type !== 'text') {
+        throw new Error('Unexpected response type from Claude')
       }
 
-      return JSON.parse(content) as Lesson
-    } catch (error) {
+      // Extract JSON from the response
+      let jsonText = content.text
+      const jsonMatch = jsonText.match(/\{[\s\S]*\}/)
+      if (jsonMatch) {
+        jsonText = jsonMatch[0]
+      }
+
+      return JSON.parse(jsonText) as Lesson
+    } catch (error: any) {
       console.error('AI lesson refinement error:', error)
-      throw new Error('Failed to refine lesson. Please try again.')
+      throw new Error(`Failed to refine lesson: ${error?.message || 'Unknown error'}`)
     }
   },
 
@@ -231,26 +256,36 @@ Return ONLY valid JSON array:
 ]`
 
     try {
-      const response = await openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: prompt }
-        ],
+      const message = await anthropic.messages.create({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 3000,
         temperature: 0.8,
-        response_format: { type: 'json_object' },
+        system: SYSTEM_PROMPT,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
       })
 
-      const content = response.choices[0].message.content
-      if (!content) {
-        throw new Error('No content generated')
+      const content = message.content[0]
+      if (content.type !== 'text') {
+        throw new Error('Unexpected response type from Claude')
       }
 
-      const result = JSON.parse(content)
-      return result.questions || result
-    } catch (error) {
+      // Extract JSON from the response
+      let jsonText = content.text
+      const jsonMatch = jsonText.match(/\[[\s\S]*\]/)
+      if (jsonMatch) {
+        jsonText = jsonMatch[0]
+      }
+
+      const result = JSON.parse(jsonText)
+      return Array.isArray(result) ? result : result.questions || []
+    } catch (error: any) {
       console.error('AI quiz generation error:', error)
-      throw new Error('Failed to generate quiz questions. Please try again.')
+      throw new Error(`Failed to generate quiz questions: ${error?.message || 'Unknown error'}`)
     }
   },
 }

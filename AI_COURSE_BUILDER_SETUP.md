@@ -1,8 +1,8 @@
-# AI Course Builder Setup Guide
+# AI Course Builder Setup Guide (Claude API)
 
 ## Overview
 
-The AI Course Builder is the headline feature of RR LMS - it allows admins to generate complete, audit-ready compliance training courses in seconds using artificial intelligence.
+The AI Course Builder uses **Anthropic's Claude 3.5 Sonnet** - the same AI powering Claude Code - to generate complete, audit-ready compliance training courses in seconds.
 
 ### What It Generates
 
@@ -16,33 +16,37 @@ The AI Course Builder is the headline feature of RR LMS - it allows admins to ge
 
 ## Prerequisites
 
-1. **OpenAI Account**: Sign up at [https://platform.openai.com/signup](https://platform.openai.com/signup)
-2. **API Credits**: Ensure you have credits in your OpenAI account
+1. **Anthropic Account**: Sign up at [https://console.anthropic.com/](https://console.anthropic.com/)
+2. **API Credits**: Add credits to your account ($5 minimum)
 3. **Node.js Project**: This guide assumes you have the RR LMS project set up
 
 ---
 
-## Step 1: Get Your OpenAI API Key
+## Step 1: Get Your Claude API Key
 
-1. Go to [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
-2. Click **"Create new secret key"**
-3. Give it a name like "RR LMS Course Builder"
-4. Copy the API key (starts with `sk-`)
+1. Go to [https://console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
+2. Click **"Create Key"**
+3. Give it a name like "LMS Course Builder"
+4. Copy the API key (starts with `sk-ant-`)
 5. **IMPORTANT**: Save this key securely - you won't be able to see it again!
 
 ---
 
-## Step 2: Configure Environment Variables
+## Step 2: Add Credits to Your Account
 
-1. Copy `.env.example` to `.env.local`:
-   ```bash
-   cp .env.example .env.local
-   ```
+1. Go to [https://console.anthropic.com/settings/plans](https://console.anthropic.com/settings/plans)
+2. Click **"Add Credits"**
+3. Add at least **$5** (this will generate ~20-50 courses)
+4. Complete payment
 
-2. Add your OpenAI API key to `.env.local`:
+---
+
+## Step 3: Configure Environment Variables
+
+1. Open `.env.local` in your project root
+2. Add your Anthropic API key:
    ```env
-   # OpenAI (AI Course Builder)
-   OPENAI_API_KEY=sk_proj_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+   ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
    ```
 
 3. Ensure you have your Supabase credentials as well:
@@ -53,19 +57,19 @@ The AI Course Builder is the headline feature of RR LMS - it allows admins to ge
 
 ---
 
-## Step 3: Install Dependencies
+## Step 4: Install Dependencies
 
-The OpenAI SDK should already be installed, but verify:
+The Anthropic SDK should already be installed, but verify:
 
 ```bash
-npm install openai
+npm install @anthropic-ai/sdk
 ```
 
 ---
 
-## Step 4: Restart Development Server
+## Step 5: Restart Development Server
 
-If your dev server is running, restart it to pick up the new environment variables:
+Restart your dev server to pick up the new environment variables:
 
 ```bash
 # Stop the server (Ctrl+C)
@@ -97,7 +101,7 @@ The AI needs these inputs to generate a tailored course:
 ### 3. Generate Course
 
 1. Click **"Generate Course with AI"** (purple gradient button)
-2. Wait 10-30 seconds for AI to create your course
+2. Wait 10-30 seconds for Claude to create your course
 3. Review the generated outline:
    - Course description
    - Module structure
@@ -174,27 +178,11 @@ If you're not satisfied with the generated course:
 
 ### Lesson Refinement (Coming Soon)
 
-The AI service includes a `refineLesson()` function for improving individual lessons based on feedback:
-
-```typescript
-// Example usage (in future updates)
-const refinedLesson = await aiCourseGenerator.refineLesson(
-  lessonContent,
-  "Add more practical examples for payment services firms"
-)
-```
+The AI service includes a `refineLesson()` function for improving individual lessons based on feedback.
 
 ### Additional Quiz Questions (Coming Soon)
 
-Generate more quiz questions for existing courses:
-
-```typescript
-// Example usage (in future updates)
-const moreQuestions = await aiCourseGenerator.generateQuizQuestions(
-  "AML Risk Assessment",
-  5 // number of questions
-)
-```
+Generate more quiz questions for existing courses.
 
 ---
 
@@ -202,13 +190,14 @@ const moreQuestions = await aiCourseGenerator.generateQuizQuestions(
 
 ### AI Model Used
 
-- **Model**: `gpt-4-turbo-preview`
+- **Model**: Claude 3.5 Sonnet (claude-3-5-sonnet-20241022)
+- **Max Tokens**: 8000 for course generation
 - **Temperature**: 0.7 (balanced creativity and consistency)
 - **Output Format**: Structured JSON matching database schema
 
 ### System Prompt
 
-The AI is instructed to act as an expert instructional designer specializing in:
+Claude is instructed to act as an expert instructional designer specializing in:
 - Regulatory compliance training
 - UK/EMEA financial services
 - FCA requirements
@@ -217,12 +206,14 @@ The AI is instructed to act as an expert instructional designer specializing in:
 
 ### Cost Estimation
 
-Average costs per course generation (as of 2025):
-- **Input tokens**: ~1,500 tokens (~$0.015)
-- **Output tokens**: ~5,000-8,000 tokens (~$0.15-$0.24)
-- **Total per course**: ~$0.17-$0.26
+Average costs per course generation (as of January 2026):
+- **Input tokens**: ~1,500 tokens (~$0.0045)
+- **Output tokens**: ~5,000-8,000 tokens (~$0.075-$0.12)
+- **Total per course**: ~$0.08-$0.13
 
-For 100 courses/month: ~$17-$26
+For 100 courses/month: ~$8-$13
+
+**Much more affordable than OpenAI GPT-4!**
 
 ---
 
@@ -231,15 +222,15 @@ For 100 courses/month: ~$17-$26
 ### Error: "Failed to generate course outline"
 
 **Possible causes:**
-1. Invalid or expired OpenAI API key
-2. No credits remaining in OpenAI account
+1. Invalid or missing Anthropic API key
+2. No credits remaining in Anthropic account
 3. Network connectivity issues
-4. OpenAI API downtime
+4. Anthropic API downtime
 
 **Solutions:**
 1. Verify your API key is correct in `.env.local`
-2. Check your OpenAI account has credits: [https://platform.openai.com/usage](https://platform.openai.com/usage)
-3. Check API status: [https://status.openai.com/](https://status.openai.com/)
+2. Check your Anthropic account has credits: [https://console.anthropic.com/settings/plans](https://console.anthropic.com/settings/plans)
+3. Check API status: [https://status.anthropic.com/](https://status.anthropic.com/)
 4. Check browser console and server logs for detailed error messages
 
 ### Error: "Unauthorized" or "Forbidden"
@@ -263,13 +254,12 @@ Ensure you're logged in as an owner, admin, or manager of the organization.
 
 ### API Rate Limits
 
-OpenAI has rate limits based on your account tier:
-- **Free tier**: 3 requests/minute
-- **Pay-as-you-go**: Higher limits based on usage
+Anthropic has generous rate limits:
+- **Tier 1** (after adding $5): 50 requests/minute, 40,000 tokens/minute
 
 If you hit rate limits:
 1. Wait a minute and try again
-2. Consider upgrading your OpenAI account tier
+2. Consider upgrading your Anthropic tier
 
 ---
 
@@ -278,8 +268,22 @@ If you hit rate limits:
 1. **Never commit `.env.local`** to version control
 2. **Rotate API keys** if exposed
 3. **Use environment variables** for all secrets
-4. **Monitor usage** in OpenAI dashboard to prevent unexpected charges
-5. **Set spending limits** in OpenAI account settings
+4. **Monitor usage** in Anthropic dashboard to prevent unexpected charges
+5. **Set spending limits** in Anthropic account settings
+
+---
+
+## Why Claude Instead of OpenAI?
+
+**Advantages:**
+- ✅ More reliable API key setup (no project complications)
+- ✅ Better at following structured output requirements
+- ✅ More affordable (~40% cheaper than GPT-4)
+- ✅ Excellent at regulatory and compliance content
+- ✅ Same quality or better for course generation
+- ✅ Simpler billing (just add credits)
+
+**You're already using Claude Code, so you know the quality!**
 
 ---
 
@@ -302,7 +306,7 @@ If you encounter issues:
 2. Review server logs: `npm run dev` output
 3. Check browser console for errors
 4. Verify environment variables are set correctly
-5. Ensure OpenAI API key has sufficient credits
+5. Ensure Anthropic account has sufficient credits
 
 ---
 
@@ -354,4 +358,4 @@ If you encounter issues:
 
 ---
 
-Made with 🤖 by RR LMS AI Course Builder
+Made with 🤖 by Claude 3.5 Sonnet
