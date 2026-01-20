@@ -133,8 +133,8 @@ Return ONLY valid JSON matching this schema:
 
     try {
       const message = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 8000,
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 4096,
         temperature: 0.7,
         system: SYSTEM_PROMPT,
         messages: [
@@ -202,8 +202,8 @@ Generate an improved version of this lesson in JSON format matching this schema:
 
     try {
       const message = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 4000,
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 3000,
         temperature: 0.7,
         system: SYSTEM_PROMPT,
         messages: [
@@ -257,7 +257,7 @@ Return ONLY valid JSON array:
 
     try {
       const message = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-3-haiku-20240307',
         max_tokens: 3000,
         temperature: 0.8,
         system: SYSTEM_PROMPT,

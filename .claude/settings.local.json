@@ -11,7 +11,8 @@
       "Bash(git push:*)",
       "Bash(npm install:*)",
       "Bash(curl:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(ls:*)"
     ]
   }
 }

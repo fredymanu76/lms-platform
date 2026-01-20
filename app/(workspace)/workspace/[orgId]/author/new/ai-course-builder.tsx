@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Sparkles, Loader2, CheckCircle2, AlertCircle } from "lucide-react"
+import { Sparkles, Loader2, CheckCircle2, AlertCircle, Lightbulb } from "lucide-react"
 
 interface AICourseBuilderProps {
   orgId: string
@@ -19,8 +19,11 @@ interface AICourseBuilderProps {
 export function AICourseBuilder({ orgId, organizationName, sector }: AICourseBuilderProps) {
   const router = useRouter()
   const [isGenerating, setIsGenerating] = useState(false)
+  const [generationProgress, setGenerationProgress] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [generatedCourse, setGeneratedCourse] = useState<any | null>(null)
+  const [suggestedTopic, setSuggestedTopic] = useState<string>("")
+  const [isLoadingSuggestion, setIsLoadingSuggestion] = useState(false)
 
   const [formData, setFormData] = useState({
     title: "",
@@ -30,11 +33,63 @@ export function AICourseBuilder({ orgId, organizationName, sector }: AICourseBui
     duration: 30,
   })
 
+  // Progress counter effect
+  useEffect(() => {
+    if (isGenerating) {
+      setGenerationProgress(0)
+      const interval = setInterval(() => {
+        setGenerationProgress(prev => {
+          if (prev >= 95) {
+            clearInterval(interval)
+            return 95
+          }
+          return prev + 5
+        })
+      }, 500)
+      return () => clearInterval(interval)
+    }
+  }, [isGenerating])
+
+  const handleSuggestTopic = async () => {
+    if (!formData.title.trim()) {
+      setError("Please enter a course title first")
+      return
+    }
+
+    setIsLoadingSuggestion(true)
+    setError(null)
+
+    try {
+      const response = await fetch("/api/ai/suggest-topic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: formData.title,
+          sector,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setSuggestedTopic(data.suggestion)
+        setFormData({ ...formData, topic: data.suggestion })
+      } else {
+        setError(data.error || "Failed to generate topic suggestion")
+      }
+    } catch (err) {
+      setError("An unexpected error occurred")
+    } finally {
+      setIsLoadingSuggestion(false)
+    }
+  }
+
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsGenerating(true)
     setError(null)
     setGeneratedCourse(null)
+    setGenerationProgress(0)
 
     try {
       const response = await fetch("/api/ai/generate-course", {
@@ -51,7 +106,10 @@ export function AICourseBuilder({ orgId, organizationName, sector }: AICourseBui
       const data = await response.json()
 
       if (response.ok) {
-        setGeneratedCourse(data.outline)
+        setGenerationProgress(100)
+        setTimeout(() => {
+          setGeneratedCourse(data.outline)
+        }, 300)
       } else {
         setError(data.error || "Failed to generate course")
       }
@@ -81,8 +139,8 @@ export function AICourseBuilder({ orgId, organizationName, sector }: AICourseBui
       const data = await response.json()
 
       if (response.ok) {
-        // Redirect to the new course
-        router.push(`/workspace/${orgId}/author`)
+        // Redirect to the new course editor
+        router.push(`/workspace/${orgId}/author/edit/${data.courseId}`)
       } else {
         setError(data.error || "Failed to save course")
       }
@@ -95,6 +153,34 @@ export function AICourseBuilder({ orgId, organizationName, sector }: AICourseBui
 
   return (
     <div className="space-y-6">
+      {/* Generation Progress Overlay */}
+      {isGenerating && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <Card className="w-96">
+            <CardContent className="pt-6">
+              <div className="text-center space-y-4">
+                <Sparkles className="h-12 w-12 mx-auto text-purple-500 animate-pulse" />
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Generating Your Course...</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Claude is creating comprehensive training content
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${generationProgress}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">{generationProgress}% complete</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Generation Form */}
       <Card className="border-border/50">
         <CardHeader>
@@ -129,7 +215,29 @@ export function AICourseBuilder({ orgId, organizationName, sector }: AICourseBui
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="topic">Topic / Subject Matter</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="topic">Topic / Subject Matter</Label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSuggestTopic}
+                  disabled={isLoadingSuggestion || !formData.title}
+                  className="text-purple-600 hover:text-purple-700"
+                >
+                  {isLoadingSuggestion ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                      Suggesting...
+                    </>
+                  ) : (
+                    <>
+                      <Lightbulb className="h-4 w-4 mr-1" />
+                      AI Suggest
+                    </>
+                  )}
+                </Button>
+              </div>
               <Textarea
                 id="topic"
                 placeholder="Describe what this course should cover..."
