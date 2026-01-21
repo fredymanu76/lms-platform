@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
           category: outline.category,
           tags: outline.tags,
           status: 'draft',
+          created_by: user.id,
         })
         .select()
         .single()
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
       if (courseError) {
         console.error('Failed to create course:', courseError)
         return NextResponse.json(
-          { error: 'Failed to save course', outline },
+          { error: 'Failed to save course', details: courseError.message, outline },
           { status: 500 }
         )
       }
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
           course_id: course.id,
           version: 1,
           status: 'draft',
-          change_log: 'AI-generated course',
+          created_by: user.id,
         })
         .select()
         .single()
