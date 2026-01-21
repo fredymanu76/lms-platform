@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseServer } from '@/lib/supabase/server'
-import { nanoid } from 'nanoid'
+import { randomUUID } from 'crypto'
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create course
-    const courseId = nanoid()
+    const courseId = randomUUID()
     const { error: courseError } = await supabase
       .from('courses')
       .insert({
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     if (courseError) throw courseError
 
     // Create initial version
-    const versionId = nanoid()
+    const versionId = randomUUID()
     const { error: versionError } = await supabase
       .from('course_versions')
       .insert({
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     if (versionError) throw versionError
 
     // Create a placeholder module
-    const moduleId = nanoid()
+    const moduleId = randomUUID()
     const { error: moduleError } = await supabase
       .from('modules')
       .insert({

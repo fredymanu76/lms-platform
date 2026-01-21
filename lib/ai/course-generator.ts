@@ -78,11 +78,12 @@ ${request.duration ? `Target Duration: ~${request.duration} minutes` : ''}
 ${request.sector ? `Industry Sector: ${request.sector}` : ''}
 
 Requirements:
-1. Create 2-4 modules, each with 2-4 lessons
+1. Create 5-6 comprehensive modules, each with 3-5 lessons
 2. Each lesson should have multiple content blocks (headings, text, callouts, lists)
-3. Include practical examples and regulatory context
-4. Generate 5-10 quiz questions that test key concepts
+3. Include practical examples, case studies, and regulatory context
+4. Generate 8-12 quiz questions that test key concepts across all modules
 5. Ensure all content is professional, accurate, and compliance-focused
+6. Structure the course to build knowledge progressively from foundational to advanced concepts
 
 Return ONLY valid JSON matching this schema:
 {
@@ -133,8 +134,8 @@ Return ONLY valid JSON matching this schema:
 
     try {
       const message = await anthropic.messages.create({
-        model: 'claude-3-haiku-20240307',
-        max_tokens: 4096,
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 8000,
         temperature: 0.7,
         system: SYSTEM_PROMPT,
         messages: [
