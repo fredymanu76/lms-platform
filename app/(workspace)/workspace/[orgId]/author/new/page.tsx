@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { AICourseBuilder } from "./ai-course-builder"
+import { CourseImportTabs } from "./course-import-tabs"
 
 export default async function NewCoursePage({
   params,
@@ -52,7 +52,7 @@ export default async function NewCoursePage({
             <div>
               <h1 className="text-2xl font-bold">Create New Course</h1>
               <p className="text-sm text-muted-foreground">
-                Use AI to generate a complete training course instantly
+                Generate with AI, upload existing content, or create manually
               </p>
             </div>
           </div>
@@ -61,8 +61,8 @@ export default async function NewCoursePage({
 
       {/* Content */}
       <div className="container mx-auto px-6 py-8">
-        <div className="max-w-3xl mx-auto">
-          <AICourseBuilder
+        <div className="max-w-4xl mx-auto">
+          <CourseImportTabs
             orgId={orgId}
             organizationName={org?.name || "your organization"}
             sector={org?.sector}

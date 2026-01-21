@@ -155,11 +155,30 @@ export default async function AuthorStudioPage({
             ) : (
               <div className="space-y-3">
                 {coursesWithLatestVersion.map((course: any) => {
-                  const statusColor = {
-                    published: "default",
-                    draft: "secondary",
-                    review: "outline",
-                    archived: "outline",
+                  // Color-coded status: Red (draft), Amber (edited/review), Green (published)
+                  const getStatusBadge = (status: string) => {
+                    switch (status) {
+                      case "draft":
+                        return (
+                          <Badge className="bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border-red-300 dark:border-red-800">
+                            Draft
+                          </Badge>
+                        )
+                      case "review":
+                        return (
+                          <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-300 dark:border-amber-800">
+                            In Review
+                          </Badge>
+                        )
+                      case "published":
+                        return (
+                          <Badge className="bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300 border-green-300 dark:border-green-800">
+                            Published
+                          </Badge>
+                        )
+                      default:
+                        return <Badge variant="outline">{status}</Badge>
+                    }
                   }
 
                   return (
@@ -170,11 +189,7 @@ export default async function AuthorStudioPage({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-semibold truncate">{course.title}</h3>
-                          {course.latestVersion && (
-                            <Badge variant={statusColor[course.latestVersion.status] as any}>
-                              {course.latestVersion.status}
-                            </Badge>
-                          )}
+                          {course.latestVersion && getStatusBadge(course.latestVersion.status)}
                           {course.category && (
                             <Badge variant="outline">{course.category}</Badge>
                           )}
