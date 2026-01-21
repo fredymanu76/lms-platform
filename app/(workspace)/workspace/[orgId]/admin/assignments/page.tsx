@@ -7,6 +7,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { AssignmentManager } from "./assignment-manager"
 import { AssignmentList } from "./assignment-list"
+import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
 
 export default async function AssignmentsPage({
   params,
@@ -138,6 +139,14 @@ export default async function AssignmentsPage({
       {/* Header */}
       <div className="border-b border-border/40 bg-background">
         <div className="container mx-auto px-6 py-6">
+          <Breadcrumbs
+            items={[
+              { label: 'Workspace', href: `/workspace/${orgId}` },
+              { label: 'Admin' },
+              { label: 'Assignments' },
+            ]}
+            homeHref={`/workspace/${orgId}`}
+          />
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">Assignment Management</h1>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { AlertTriangle, CheckCircle2, Clock, FileDown, Shield } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
 
 export default async function ComplianceDashboardPage({
   params,
@@ -132,7 +133,14 @@ export default async function ComplianceDashboardPage({
       {/* Header */}
       <div className="border-b border-border/40 bg-background">
         <div className="container mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
+          <Breadcrumbs
+            items={[
+              { label: 'Workspace', href: `/workspace/${orgId}` },
+              { label: 'Compliance' },
+            ]}
+            homeHref={`/workspace/${orgId}`}
+          />
+          <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-2">
                 <Shield className="h-8 w-8 text-primary" />
@@ -142,12 +150,20 @@ export default async function ComplianceDashboardPage({
                 Training matrix and regulatory readiness overview
               </p>
             </div>
-            <Link href={`/workspace/${orgId}/compliance/export`}>
-              <Button>
-                <FileDown className="h-4 w-4 mr-2" />
-                Export Evidence Pack
-              </Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link href={`/api/compliance/export-excel?orgId=${orgId}`} target="_blank">
+                <Button variant="outline">
+                  <FileDown className="h-4 w-4 mr-2" />
+                  Export Excel
+                </Button>
+              </Link>
+              <Link href={`/workspace/${orgId}/compliance/export`}>
+                <Button>
+                  <FileDown className="h-4 w-4 mr-2" />
+                  Export JSON
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

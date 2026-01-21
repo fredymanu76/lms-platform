@@ -4,6 +4,7 @@ import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { FullCourseEditor } from "./full-course-editor"
+import { Breadcrumbs } from "@/components/navigation/breadcrumbs"
 
 export default async function EditCoursePage({
   params,
@@ -81,7 +82,15 @@ export default async function EditCoursePage({
       {/* Header */}
       <div className="border-b border-border/40 bg-background sticky top-0 z-10">
         <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+          <Breadcrumbs
+            items={[
+              { label: 'Workspace', href: `/workspace/${orgId}` },
+              { label: 'Author Studio', href: `/workspace/${orgId}/author` },
+              { label: 'Edit Course' },
+            ]}
+            homeHref={`/workspace/${orgId}`}
+          />
+          <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-4">
               <Link href={`/workspace/${orgId}/author`}>
                 <Button variant="ghost" size="sm">
