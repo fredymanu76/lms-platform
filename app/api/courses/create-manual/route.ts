@@ -53,7 +53,6 @@ export async function POST(request: NextRequest) {
         course_id: courseId,
         version: 1,
         status: 'draft',
-        description: `Initial version - manually created`,
         created_by: user.id,
       })
 
