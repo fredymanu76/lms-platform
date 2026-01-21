@@ -78,14 +78,15 @@ ${request.duration ? `Target Duration: ~${request.duration} minutes` : ''}
 ${request.sector ? `Industry Sector: ${request.sector}` : ''}
 
 Requirements:
-1. Create 5-6 comprehensive modules, each with 3-5 lessons
-2. Each lesson should have multiple content blocks (headings, text, callouts, lists)
-3. Include practical examples, case studies, and regulatory context
-4. Generate 8-12 quiz questions that test key concepts across all modules
-5. Ensure all content is professional, accurate, and compliance-focused
-6. Structure the course to build knowledge progressively from foundational to advanced concepts
+1. Create 3-4 comprehensive modules (not 5-6 due to token limits), each with 2-3 lessons
+2. Each lesson should have 2-3 content blocks (headings, text, callouts)
+3. Include practical examples and regulatory context
+4. Generate 6-8 quiz questions that test key concepts
+5. Ensure all content is professional and compliance-focused
 
-Return ONLY valid JSON matching this schema:
+IMPORTANT: Return ONLY valid, properly formatted JSON. No markdown, no explanations, just the JSON object.
+
+JSON Schema:
 {
   "title": "string",
   "description": "string (2-3 sentences)",
@@ -152,13 +153,26 @@ Return ONLY valid JSON matching this schema:
       }
 
       // Extract JSON from the response (Claude might wrap it in markdown)
-      let jsonText = content.text
-      const jsonMatch = jsonText.match(/\{[\s\S]*\}/)
+      let jsonText = content.text.trim()
+
+      // Remove markdown code blocks if present
+      jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?$/g, '')
+
+      // Find the JSON object - use single-line mode
+      const jsonMatch = jsonText.match(/\{[\s\S]*\}/s)
       if (jsonMatch) {
         jsonText = jsonMatch[0]
       }
 
-      const outline = JSON.parse(jsonText) as CourseOutline
+      // Parse and validate
+      let outline: CourseOutline
+      try {
+        outline = JSON.parse(jsonText)
+      } catch (parseError: any) {
+        console.error('JSON parsing failed:', parseError.message)
+        console.error('Attempted to parse (first 500 chars):', jsonText.substring(0, 500))
+        throw new Error(`Failed to parse AI response as JSON: ${parseError.message}`)
+      }
 
       // Validate basic structure
       if (!outline.title || !outline.modules || outline.modules.length === 0) {
