@@ -44,7 +44,7 @@ export const CourseAssignedEmail = ({
           <Section style={courseSection}>
             <Text style={courseTitle}>{courseName}</Text>
             {courseDescription && (
-              <Text style={courseDescription}>{courseDescription}</Text>
+              <Text style={courseDescriptionStyle}>{courseDescription}</Text>
             )}
             {dueDate && (
               <Text style={dueDateText}>
@@ -124,7 +124,7 @@ const courseTitle = {
   margin: '0 0 12px 0',
 }
 
-const courseDescription = {
+const courseDescriptionStyle = {
   color: '#333',
   fontSize: '14px',
   margin: '0 0 12px 0',

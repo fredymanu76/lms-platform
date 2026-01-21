@@ -84,7 +84,7 @@ export default function QuizPage({
         return
       }
 
-      setQuestions(questionsData as Question[])
+      setQuestions(questionsData as unknown as Question[])
 
       // Create attempt
       const { data: { user } } = await supabase.auth.getUser()

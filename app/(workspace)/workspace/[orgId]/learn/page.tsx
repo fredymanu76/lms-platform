@@ -195,7 +195,7 @@ export default async function MyLearningPage({
                           <CardTitle className="text-base mb-1">{course?.title}</CardTitle>
                           <CardDescription className="text-xs">
                             Completed: {completion?.completed_at ? new Date(completion.completed_at).toLocaleDateString() : "N/A"}
-                            {completion?.score !== null && (
+                            {completion && completion.score !== null && (
                               <> • Score: {completion.score}%</>
                             )}
                           </CardDescription>

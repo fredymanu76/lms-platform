@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { FullCourseEditor } from "./full-course-editor"
 
 export default async function EditCoursePage({
   params,
@@ -78,7 +79,7 @@ export default async function EditCoursePage({
   return (
     <div className="min-h-screen bg-muted/20">
       {/* Header */}
-      <div className="border-b border-border/40 bg-background">
+      <div className="border-b border-border/40 bg-background sticky top-0 z-10">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -95,85 +96,21 @@ export default async function EditCoursePage({
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline">Save Draft</Button>
-              <Button>Publish Course</Button>
-            </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="container mx-auto px-6 py-8">
-        <div className="max-w-5xl mx-auto">
-          {/* Course Editor Placeholder */}
-          <div className="bg-background border border-border/40 rounded-lg p-8">
-            <h2 className="text-xl font-semibold mb-4">Course Editor</h2>
-            <p className="text-muted-foreground mb-6">
-              Full course editor coming soon. For now, you can view the generated structure:
-            </p>
-
-            {/* Course Info */}
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Description</h3>
-                <p className="text-muted-foreground">{course.description}</p>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Category</h3>
-                <p className="text-muted-foreground">{course.category}</p>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Tags</h3>
-                <div className="flex gap-2 flex-wrap">
-                  {course.tags?.map((tag: string) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-muted rounded-full text-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Modules */}
-              <div>
-                <h3 className="font-semibold text-lg mb-4">Modules ({modules?.length || 0})</h3>
-                <div className="space-y-4">
-                  {modules?.map((module: any, idx: number) => (
-                    <div
-                      key={module.id}
-                      className="p-4 bg-muted/50 rounded-lg border border-border/40"
-                    >
-                      <h4 className="font-medium mb-2">
-                        Module {idx + 1}: {module.title}
-                      </h4>
-                      <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground ml-4">
-                        {module.lessons?.map((lesson: any) => (
-                          <li key={lesson.id}>
-                            {lesson.title} ({lesson.estimated_minutes} min)
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Quiz */}
-              {quiz && (
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Assessment</h3>
-                  <p className="text-muted-foreground">
-                    {quiz.questions?.length || 0} quiz questions • Pass mark: {quiz.pass_mark}%
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+        <div className="max-w-6xl mx-auto">
+          <FullCourseEditor
+            courseId={courseId}
+            orgId={orgId}
+            versionId={version?.id}
+            initialCourse={course}
+            initialModules={modules || []}
+            initialQuiz={quiz}
+          />
         </div>
       </div>
     </div>

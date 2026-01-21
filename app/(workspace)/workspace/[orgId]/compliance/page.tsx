@@ -105,7 +105,7 @@ export default async function ComplianceDashboardPage({
 
     return {
       userId: member.user_id,
-      name: member.profiles?.full_name || "Unknown",
+      name: (member as any).profiles?.full_name || "Unknown",
       role: member.role,
       ...stats,
       completionRate: stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0,
@@ -241,7 +241,7 @@ export default async function ComplianceDashboardPage({
                       className="flex items-center justify-between p-3 rounded-lg border border-destructive/20 bg-destructive/5"
                     >
                       <div className="flex-1">
-                        <p className="font-medium">{member?.profiles?.full_name || "Unknown"}</p>
+                        <p className="font-medium">{(member as any)?.profiles?.full_name || "Unknown"}</p>
                         <p className="text-sm text-muted-foreground">
                           {assignment.course_versions?.courses?.title}
                         </p>

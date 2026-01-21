@@ -169,10 +169,10 @@ export default async function TeamManagementPage({
                 </div>
               ) : (
                 memberStats.map((member) => {
-                  const initials = member.profiles?.full_name
-                    ? member.profiles.full_name
+                  const initials = (member as any).profiles?.full_name
+                    ? (member as any).profiles.full_name
                         .split(" ")
-                        .map(n => n[0])
+                        .map((n: string) => n[0])
                         .join("")
                         .toUpperCase()
                         .slice(0, 2)
@@ -194,7 +194,7 @@ export default async function TeamManagementPage({
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <p className="font-medium truncate">
-                              {member.profiles?.full_name || "Unknown User"}
+                              {(member as any).profiles?.full_name || "Unknown User"}
                             </p>
                             <Badge variant={roleColors[member.role] as any}>
                               {member.role}

@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from "next/server"
 import { supabaseServer } from "@/lib/supabase/server"
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const orgId = searchParams.get('orgId')
+
+  if (!orgId) {
+    return NextResponse.json({ error: 'Missing orgId parameter' }, { status: 400 })
+  }
+
+  // Call the POST handler with a constructed request
+  return POST(request, orgId)
+}
+
+async function POST(request: NextRequest, orgIdParam?: string) {
   try {
     const supabase = await supabaseServer()
 
@@ -15,8 +27,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const body = await request.json()
-    const { orgId } = body
+    let orgId = orgIdParam
+
+    if (!orgId) {
+      try {
+        const body = await request.json()
+        orgId = body.orgId
+      } catch {
+        // If no body, orgId must be in params
+      }
+    }
 
     if (!orgId) {
       return NextResponse.json(
@@ -138,12 +158,12 @@ export async function POST(request: NextRequest) {
 
         return {
           userId: member.user_id,
-          name: member.profiles?.full_name || "Unknown",
+          name: (member as any).profiles?.full_name || "Unknown",
           role: member.role,
           completedCourses: memberCompletions.length,
           courses: memberCompletions.map(c => ({
-            title: c.course_versions?.courses?.title,
-            category: c.course_versions?.courses?.category,
+            title: (c as any).course_versions?.courses?.title,
+            category: (c as any).course_versions?.courses?.category,
             completedAt: c.completed_at,
             score: c.score,
             passed: c.passed,
@@ -152,15 +172,15 @@ export async function POST(request: NextRequest) {
       }) || [],
       completionLogs: completions?.map(c => ({
         userId: c.user_id,
-        courseTitle: c.course_versions?.courses?.title,
-        category: c.course_versions?.courses?.category,
-        version: c.course_versions?.version,
+        courseTitle: (c as any).course_versions?.courses?.title,
+        category: (c as any).course_versions?.courses?.category,
+        version: (c as any).course_versions?.version,
         completedAt: c.completed_at,
         score: c.score,
         passed: c.passed,
       })) || [],
       courseVersionHistory: courseVersions?.map(cv => ({
-        courseTitle: cv.courses?.title,
+        courseTitle: (cv as any).courses?.title,
         version: cv.version,
         status: cv.status,
         changeLog: cv.change_log,
@@ -168,12 +188,12 @@ export async function POST(request: NextRequest) {
       })) || [],
       policyAcknowledgements: policyAcks?.map(pa => ({
         userId: pa.user_id,
-        templateId: pa.org_policies?.template_id,
+        templateId: (pa as any).org_policies?.template_id,
         acknowledgedAt: pa.acknowledged_at,
       })) || [],
       overdueTraining: overdueAssignments?.map(oa => ({
         userId: oa.scope_id,
-        courseTitle: oa.course_versions?.courses?.title,
+        courseTitle: (oa as any).course_versions?.courses?.title,
         dueDate: oa.due_at,
       })) || [],
     }

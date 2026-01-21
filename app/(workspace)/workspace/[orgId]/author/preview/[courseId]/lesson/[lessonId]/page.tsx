@@ -2,37 +2,51 @@ import { supabaseServer } from "@/lib/supabase/server"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, CheckCircle2, Circle, BookOpen, FileText, Download } from "lucide-react"
+import { ChevronLeft, ChevronRight, Circle, BookOpen, FileText, Download } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-export default async function LessonViewerPage({
+export default async function PreviewLessonPage({
   params,
 }: {
-  params: Promise<{ orgId: string; courseVersionId: string; lessonId: string }>
+  params: Promise<{ orgId: string; courseId: string; lessonId: string }>
 }) {
-  const { orgId, courseVersionId, lessonId } = await params
+  const { orgId, courseId, lessonId } = await params
   const supabase = await supabaseServer()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  // Get course version
-  const { data: courseVersion } = await supabase
-    .from("course_versions")
-    .select(`
-      id,
-      version,
-      courses (
-        id,
-        title,
-        category
-      )
-    `)
-    .eq("id", courseVersionId)
+  // Check if user is admin
+  const { data: membership } = await supabase
+    .from("org_members")
+    .select("role")
+    .eq("org_id", orgId)
+    .eq("user_id", user.id)
     .single()
 
-  if (!courseVersion) redirect(`/workspace/${orgId}/catalogue`)
+  const isAdmin = ['owner', 'admin', 'manager'].includes(membership?.role || '')
+  if (!isAdmin) redirect(`/workspace/${orgId}`)
+
+  // Get course
+  const { data: course } = await supabase
+    .from("courses")
+    .select("*")
+    .eq("id", courseId)
+    .single()
+
+  if (!course) redirect(`/workspace/${orgId}/author`)
+
+  // Get version
+  const { data: version } = await supabase
+    .from("course_versions")
+    .select("*")
+    .eq("course_id", courseId)
+    .order("version", { ascending: false })
+    .limit(1)
+    .single()
+
+  if (!version) redirect(`/workspace/${orgId}/author/preview/${courseId}`)
 
   // Get current lesson with blocks
   const { data: lesson } = await supabase
@@ -52,7 +66,7 @@ export default async function LessonViewerPage({
     .eq("id", lessonId)
     .single()
 
-  if (!lesson) redirect(`/workspace/${orgId}/learn/${courseVersionId}`)
+  if (!lesson) redirect(`/workspace/${orgId}/author/preview/${courseId}`)
 
   // Get lesson blocks
   const { data: blocks } = await supabase
@@ -75,12 +89,12 @@ export default async function LessonViewerPage({
         sort_order
       )
     `)
-    .eq("course_version_id", courseVersionId)
+    .eq("course_version_id", version.id)
     .order("sort_order", { ascending: true })
 
   const sortedModules = modules?.map(m => ({
     ...m,
-    lessons: m.lessons.sort((a: any, b: any) => a.sort_order - b.sort_order)
+    lessons: (m.lessons || []).sort((a: any, b: any) => a.sort_order - b.sort_order)
   })) || []
 
   // Find prev/next lesson
@@ -89,17 +103,6 @@ export default async function LessonViewerPage({
   const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null
   const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null
 
-  // Check completion
-  const { data: completion } = await supabase
-    .from("completions")
-    .select("id")
-    .eq("org_id", orgId)
-    .eq("user_id", user.id)
-    .eq("course_version_id", courseVersionId)
-    .single()
-
-  const course = (courseVersion as any).courses
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -107,7 +110,7 @@ export default async function LessonViewerPage({
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link href={`/workspace/${orgId}/learn/${courseVersionId}`}>
+              <Link href={`/workspace/${orgId}/author/preview/${courseId}`}>
                 <Button variant="ghost" size="sm">
                   <ChevronLeft className="h-4 w-4 mr-1" />
                   Back
@@ -115,12 +118,10 @@ export default async function LessonViewerPage({
               </Link>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <Badge variant="secondary">{course?.category || "General"}</Badge>
-                  {completion && (
-                    <Badge variant="default" className="bg-green-600">Completed</Badge>
-                  )}
+                  <Badge variant="outline">Preview Mode</Badge>
+                  <Badge variant="secondary">{course.category || "General"}</Badge>
                 </div>
-                <h1 className="text-xl font-bold">{course?.title}</h1>
+                <h1 className="text-xl font-bold">{course.title}</h1>
               </div>
             </div>
           </div>
@@ -145,15 +146,11 @@ export default async function LessonViewerPage({
                     {module.lessons.map((l: any) => {
                       const isActive = l.id === lessonId
                       return (
-                        <Link key={l.id} href={`/workspace/${orgId}/learn/${courseVersionId}/lesson/${l.id}`}>
+                        <Link key={l.id} href={`/workspace/${orgId}/author/preview/${courseId}/lesson/${l.id}`}>
                           <button className={`w-full text-left px-3 py-2 rounded-md transition-colors flex items-start gap-2 text-sm ${
                             isActive ? 'bg-primary text-primary-foreground' : 'hover:bg-muted/50'
                           }`}>
-                            {isActive ? (
-                              <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                            ) : (
-                              <Circle className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground" />
-                            )}
+                            <Circle className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground" />
                             <div className="flex-1 min-w-0">
                               <p className="truncate">{l.title}</p>
                               <p className={`text-xs ${isActive ? 'opacity-90' : 'text-muted-foreground'}`}>
@@ -208,7 +205,7 @@ export default async function LessonViewerPage({
           <div className="border-t border-border/40 bg-card p-4">
             <div className="max-w-3xl mx-auto flex items-center justify-between">
               {prevLesson ? (
-                <Link href={`/workspace/${orgId}/learn/${courseVersionId}/lesson/${prevLesson.id}`}>
+                <Link href={`/workspace/${orgId}/author/preview/${courseId}/lesson/${prevLesson.id}`}>
                   <Button variant="outline">
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     Previous
@@ -218,33 +215,19 @@ export default async function LessonViewerPage({
                 <div />
               )}
 
-              {!completion && (
-                <form action={`/api/course/complete`} method="POST">
-                  <input type="hidden" name="orgId" value={orgId} />
-                  <input type="hidden" name="courseVersionId" value={courseVersionId} />
-                  <Button type="submit" variant="default" className="bg-green-600 hover:bg-green-700">
-                    <CheckCircle2 className="h-4 w-4 mr-2" />
-                    Mark Complete
-                  </Button>
-                </form>
-              )}
-
               {nextLesson ? (
-                <Link href={`/workspace/${orgId}/learn/${courseVersionId}/lesson/${nextLesson.id}`}>
+                <Link href={`/workspace/${orgId}/author/preview/${courseId}/lesson/${nextLesson.id}`}>
                   <Button>
                     Next
                     <ChevronRight className="h-4 w-4 ml-1" />
                   </Button>
                 </Link>
               ) : (
-                !completion && (
-                  <Link href={`/workspace/${orgId}/learn/${courseVersionId}/quiz`}>
-                    <Button>
-                      Start Quiz
-                      <ChevronRight className="h-4 w-4 ml-1" />
-                    </Button>
-                  </Link>
-                )
+                <Link href={`/workspace/${orgId}/author/preview/${courseId}`}>
+                  <Button variant="outline">
+                    Finish Preview
+                  </Button>
+                </Link>
               )}
             </div>
           </div>
@@ -273,42 +256,11 @@ function LessonBlock({ block }: { block: any }) {
       )
 
     case 'video':
-      const url = content.url || ''
-      let embedUrl = ''
-
-      // YouTube
-      const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s]+)/)
-      if (youtubeMatch) {
-        embedUrl = `https://www.youtube.com/embed/${youtubeMatch[1]}`
-      }
-
-      // Vimeo
-      const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/)
-      if (vimeoMatch) {
-        embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`
-      }
-
       return (
         <Card className="border-border/50">
           <CardContent className="p-0">
-            {content.title && (
-              <div className="p-4 border-b">
-                <h3 className="font-semibold">{content.title}</h3>
-              </div>
-            )}
-            <div className="aspect-video bg-black">
-              {embedUrl ? (
-                <iframe
-                  src={embedUrl}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-muted-foreground">
-                  Video unavailable
-                </div>
-              )}
+            <div className="aspect-video bg-muted flex items-center justify-center">
+              <p className="text-muted-foreground">Video: {content.url || content.title}</p>
             </div>
           </CardContent>
         </Card>

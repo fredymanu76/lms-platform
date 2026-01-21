@@ -158,8 +158,8 @@ JSON Schema:
       // Remove markdown code blocks if present
       jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?$/g, '')
 
-      // Find the JSON object - use single-line mode
-      const jsonMatch = jsonText.match(/\{[\s\S]*\}/s)
+      // Find the JSON object - use [\s\S] for multiline matching
+      const jsonMatch = jsonText.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
         jsonText = jsonMatch[0]
       }

@@ -16,7 +16,9 @@
       "Bash(npm run dev)",
       "Bash(timeout 10 tail:*)",
       "Bash(grep:*)",
-      "Bash(node test-anthropic.js:*)"
+      "Bash(node test-anthropic.js:*)",
+      "Bash(find:*)",
+      "Bash(npx shadcn@latest add:*)"
     ]
   }
 }

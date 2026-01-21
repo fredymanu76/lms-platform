@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { supabaseServer } from "@/lib/supabase/server"
-import { Shield, LayoutDashboard, BookOpen, GraduationCap, FileText, Settings, Users, BarChart3, PenTool } from "lucide-react"
+import { Shield, LayoutDashboard, BookOpen, GraduationCap, FileText, Settings, Users, BarChart3, PenTool, ClipboardList } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Toaster } from "@/components/ui/sonner"
 
 export default async function WorkspaceLayout({
   children,
@@ -60,7 +61,7 @@ export default async function WorkspaceLayout({
   const userInitials = profile?.full_name
     ? profile.full_name
         .split(" ")
-        .map((n) => n[0])
+        .map((n: string) => n[0])
         .join("")
         .toUpperCase()
         .slice(0, 2)
@@ -122,6 +123,12 @@ export default async function WorkspaceLayout({
                     Team
                   </Button>
                 </Link>
+                <Link href={`/workspace/${orgId}/admin/assignments`}>
+                  <Button variant="ghost" className="w-full justify-start gap-2">
+                    <ClipboardList className="h-4 w-4" />
+                    Assignments
+                  </Button>
+                </Link>
                 <Link href={`/workspace/${orgId}/compliance`}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
                     <BarChart3 className="h-4 w-4" />
@@ -174,6 +181,7 @@ export default async function WorkspaceLayout({
       {/* Main Content */}
       <div className="pl-64">
         <main className="min-h-screen">{children}</main>
+        <Toaster />
       </div>
     </div>
   )

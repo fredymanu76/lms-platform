@@ -37,7 +37,7 @@ export const emailService = {
   async sendTeamInvitation(params: SendTeamInvitationParams) {
     const { to, ...emailProps } = params
 
-    const emailHtml = render(TeamInvitationEmail(emailProps))
+    const emailHtml = await render(TeamInvitationEmail(emailProps))
 
     return resend.emails.send({
       from: process.env.EMAIL_FROM || 'RR LMS <onboarding@rrlms.com>',
@@ -50,7 +50,7 @@ export const emailService = {
   async sendTrainingOverdue(params: SendTrainingOverdueParams) {
     const { to, ...emailProps } = params
 
-    const emailHtml = render(TrainingOverdueEmail(emailProps))
+    const emailHtml = await render(TrainingOverdueEmail(emailProps))
 
     return resend.emails.send({
       from: process.env.EMAIL_FROM || 'RR LMS <training@rrlms.com>',
@@ -63,7 +63,7 @@ export const emailService = {
   async sendCourseAssigned(params: SendCourseAssignedParams) {
     const { to, ...emailProps } = params
 
-    const emailHtml = render(CourseAssignedEmail(emailProps))
+    const emailHtml = await render(CourseAssignedEmail(emailProps))
 
     return resend.emails.send({
       from: process.env.EMAIL_FROM || 'RR LMS <training@rrlms.com>',

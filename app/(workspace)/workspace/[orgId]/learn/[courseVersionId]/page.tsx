@@ -93,7 +93,7 @@ export default async function CoursePlayerPage({
     .eq("course_version_id", courseVersionId)
     .single()
 
-  const course = courseVersion.courses
+  const course = (courseVersion as any).courses
 
   return (
     <div className="min-h-screen bg-background">
@@ -210,7 +210,7 @@ export default async function CoursePlayerPage({
                     <div className="space-y-6">
                       {course?.description && (
                         <p className="text-muted-foreground mb-6">
-                          {course.description}
+                          {(course as any)?.description}
                         </p>
                       )}
 
