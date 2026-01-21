@@ -66,7 +66,6 @@ export async function POST(request: NextRequest) {
         id: moduleId,
         course_version_id: versionId,
         title: 'Module 1',
-        description: 'Add lessons to this module',
         sort_order: 0,
       })
 
