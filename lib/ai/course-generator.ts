@@ -134,7 +134,7 @@ Return ONLY valid JSON matching this schema:
 
     try {
       const message = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-3-5-sonnet-20240620',
         max_tokens: 8000,
         temperature: 0.7,
         system: SYSTEM_PROMPT,
