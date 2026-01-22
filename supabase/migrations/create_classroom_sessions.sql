@@ -2,12 +2,12 @@
 CREATE TABLE IF NOT EXISTS classroom_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   org_id UUID NOT NULL REFERENCES orgs(id) ON DELETE CASCADE,
-  instructor_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  student_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  instructor_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  student_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   start_time TIMESTAMPTZ NOT NULL,
   end_time TIMESTAMPTZ NOT NULL,
   status TEXT NOT NULL DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'completed', 'cancelled', 'no_show')),
-  room_url TEXT, -- For storing Daily.co room URL
+  room_url TEXT, -- For storing Jitsi Meet room URL
   notes TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
