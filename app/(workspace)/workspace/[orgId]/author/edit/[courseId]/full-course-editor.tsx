@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { RichTextEditor } from "@/components/editor/rich-text-editor"
+import { SortableLessonBlocks } from "@/components/editor/sortable-lesson-blocks"
 import {
   Collapsible,
   CollapsibleContent,
@@ -286,6 +287,14 @@ export function FullCourseEditor({
       .filter((_, i) => i !== blockIndex)
       .map((b, i) => ({ ...b, sort_order: i }))
     lessons[lessonIndex] = { ...lessons[lessonIndex], lesson_blocks: blocks }
+    updated[moduleIndex] = { ...updated[moduleIndex], lessons }
+    setModules(updated)
+  }
+
+  const reorderLessonBlocks = (moduleIndex: number, lessonIndex: number, reorderedBlocks: LessonBlock[]) => {
+    const updated = [...modules]
+    const lessons = [...(updated[moduleIndex].lessons || [])]
+    lessons[lessonIndex] = { ...lessons[lessonIndex], lesson_blocks: reorderedBlocks }
     updated[moduleIndex] = { ...updated[moduleIndex], lessons }
     setModules(updated)
   }
@@ -671,7 +680,15 @@ export function FullCourseEditor({
 
                           {isExpanded && (
                             <CardContent className="space-y-3 pt-0">
-                              {/* Lesson Blocks */}
+                              {/* Lesson Blocks - Sortable */}
+                              <SortableLessonBlocks
+                                blocks={lesson.lesson_blocks || []}
+                                onReorder={(blocks) => reorderLessonBlocks(moduleIndex, lessonIndex, blocks)}
+                                onUpdateBlock={(blockIndex, content) => updateLessonBlock(moduleIndex, lessonIndex, blockIndex, content)}
+                                onDeleteBlock={(blockIndex) => deleteLessonBlock(moduleIndex, lessonIndex, blockIndex)}
+                              />
+
+                              {/* Keep old implementation commented for reference
                               {(lesson.lesson_blocks || []).map((block, blockIndex) => (
                                 <div key={blockIndex} className="border rounded-lg p-3 bg-background">
                                   <div className="flex items-center justify-between mb-2">
@@ -833,7 +850,7 @@ export function FullCourseEditor({
                                     </div>
                                   )}
                                 </div>
-                              ))}
+                              ))} */}
 
                               {/* Add Block Buttons */}
                               <div className="flex gap-2 flex-wrap">

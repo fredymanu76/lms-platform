@@ -88,24 +88,22 @@ export default async function MyLearningPage({
   }
 
   return (
-    <div className="min-h-screen bg-muted/20">
+    <div className="min-h-screen space-y-8">
       {/* Header */}
-      <div className="border-b border-border/40 bg-background">
-        <div className="container mx-auto px-6 py-6">
-          <h1 className="text-3xl font-bold">My Learning</h1>
-          <p className="text-muted-foreground mt-1">
-            Track your progress and manage your training
-          </p>
-        </div>
+      <div className="mb-8">
+        <h1 className="section-header text-3xl">My Learning</h1>
+        <p className="section-subtext mt-2">
+          Track your progress and manage your training
+        </p>
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-6 py-8 space-y-8">
+      <div className="space-y-8">
         {/* Due Training */}
         <section>
-          <h2 className="text-lg font-semibold mb-4">Due & In Progress</h2>
+          <h2 className="section-header text-xl mb-4">Due & In Progress</h2>
           {dueAssignments.length === 0 ? (
-            <Card className="border-border/50">
+            <Card className="workspace-card">
               <CardContent className="py-8 text-center text-muted-foreground">
                 <CheckCircle2 className="h-12 w-12 mx-auto mb-3 opacity-50" />
                 <p className="font-medium">All caught up!</p>
@@ -119,7 +117,7 @@ export default async function MyLearningPage({
                 const overdue = isOverdue(assignment.due_at)
 
                 return (
-                  <Card key={assignment.id} className={`border-border/50 ${overdue ? 'border-l-4 border-l-destructive' : ''}`}>
+                  <Card key={assignment.id} className={`workspace-card ${overdue ? 'border-l-4 border-l-destructive' : ''}`}>
                     <CardHeader>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
@@ -163,9 +161,9 @@ export default async function MyLearningPage({
 
         {/* Completed Training */}
         <section>
-          <h2 className="text-lg font-semibold mb-4">Completed</h2>
+          <h2 className="section-header text-xl mb-4">Completed</h2>
           {completedAssignments.length === 0 ? (
-            <Card className="border-border/50">
+            <Card className="workspace-card">
               <CardContent className="py-8 text-center text-muted-foreground">
                 <p className="text-sm">No completed courses yet</p>
               </CardContent>
@@ -177,7 +175,7 @@ export default async function MyLearningPage({
                 const completion = completionsMap.get(assignment.course_version_id)
 
                 return (
-                  <Card key={assignment.id} className="border-border/50">
+                  <Card key={assignment.id} className="workspace-card">
                     <CardHeader>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
@@ -211,9 +209,9 @@ export default async function MyLearningPage({
 
         {/* Certificates */}
         <section>
-          <h2 className="text-lg font-semibold mb-4">My Certificates</h2>
+          <h2 className="section-header text-xl mb-4">My Certificates</h2>
           {!certificates || certificates.length === 0 ? (
-            <Card className="border-border/50">
+            <Card className="workspace-card">
               <CardContent className="py-8 text-center text-muted-foreground">
                 <Award className="h-12 w-12 mx-auto mb-3 opacity-50" />
                 <p className="text-sm">No certificates earned yet</p>
@@ -222,7 +220,7 @@ export default async function MyLearningPage({
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {certificates.map((cert: any) => (
-                <Card key={cert.id} className="border-border/50">
+                <Card key={cert.id} className="workspace-card">
                   <CardHeader>
                     <Award className="h-8 w-8 text-primary mb-2" />
                     <CardTitle className="text-base line-clamp-2">

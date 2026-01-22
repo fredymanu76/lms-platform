@@ -1,67 +1,101 @@
 @import "tailwindcss";
 
 @theme {
-  /* Color tokens - Modern workspace feel */
+  /* Color tokens - Corporate Trust (Navy Blue) */
   --color-background: oklch(100% 0 0);
-  --color-foreground: oklch(9% 0 0);
+  --color-foreground: oklch(15% 0.02 264);
   --color-card: oklch(100% 0 0);
-  --color-card-foreground: oklch(9% 0 0);
+  --color-card-foreground: oklch(15% 0.02 264);
   --color-popover: oklch(100% 0 0);
-  --color-popover-foreground: oklch(9% 0 0);
-  --color-primary: oklch(25.35% 0.038 264.45);
-  --color-primary-foreground: oklch(98% 0 0);
-  --color-secondary: oklch(96.5% 0 0);
-  --color-secondary-foreground: oklch(9% 0 0);
-  --color-muted: oklch(96.5% 0 0);
-  --color-muted-foreground: oklch(45.9% 0.006 285.82);
-  --color-accent: oklch(96.5% 0 0);
-  --color-accent-foreground: oklch(9% 0 0);
-  --color-destructive: oklch(57.6% 0.227 27.33);
-  --color-destructive-foreground: oklch(98% 0 0);
-  --color-border: oklch(90.2% 0.004 285.82);
-  --color-input: oklch(90.2% 0.004 285.82);
-  --color-ring: oklch(25.35% 0.038 264.45);
+  --color-popover-foreground: oklch(15% 0.02 264);
 
-  /* Radius - Softer, modern feel */
+  /* Primary: Royal Navy Blue #2563EB */
+  --color-primary: oklch(54% 0.195 264);
+  --color-primary-foreground: oklch(98% 0 0);
+
+  /* Secondary: Bright Blue accent */
+  --color-secondary: oklch(62% 0.21 264);
+  --color-secondary-foreground: oklch(98% 0 0);
+
+  --color-muted: oklch(96% 0.005 264);
+  --color-muted-foreground: oklch(48% 0.02 264);
+
+  /* Accent: Amber for warnings & highlights */
+  --color-accent: oklch(72% 0.16 85);
+  --color-accent-foreground: oklch(15% 0.02 85);
+
+  /* Destructive: Red for alerts */
+  --color-destructive: oklch(58% 0.22 27);
+  --color-destructive-foreground: oklch(98% 0 0);
+
+  /* Success: Green for completion */
+  --color-success: oklch(58% 0.18 145);
+  --color-success-foreground: oklch(98% 0 0);
+
+  --color-border: oklch(88% 0.008 264);
+  --color-input: oklch(88% 0.008 264);
+  --color-ring: oklch(54% 0.195 264);
+
+  /* Radius - Professional compliance feel */
   --radius-lg: 0.5rem;
   --radius-md: calc(var(--radius-lg) - 2px);
   --radius-sm: calc(var(--radius-lg) - 4px);
 
-  /* Chart colors for dashboards */
-  --color-chart-1: oklch(60% 0.15 145);
-  --color-chart-2: oklch(70% 0.15 210);
-  --color-chart-3: oklch(65% 0.15 330);
-  --color-chart-4: oklch(75% 0.12 60);
-  --color-chart-5: oklch(68% 0.18 280);
+  /* Chart colors - Corporate Trust palette */
+  --color-chart-1: oklch(54% 0.195 264);  /* Navy Blue */
+  --color-chart-2: oklch(62% 0.21 264);   /* Bright Blue */
+  --color-chart-3: oklch(58% 0.18 145);   /* Success Green */
+  --color-chart-4: oklch(72% 0.16 85);    /* Amber */
+  --color-chart-5: oklch(50% 0.12 290);   /* Purple accent */
 }
 
 @media (prefers-color-scheme: dark) {
   @theme {
-    --color-background: oklch(14% 0.004 285.82);
-    --color-foreground: oklch(98% 0 0);
-    --color-card: oklch(14% 0.004 285.82);
-    --color-card-foreground: oklch(98% 0 0);
-    --color-popover: oklch(14% 0.004 285.82);
-    --color-popover-foreground: oklch(98% 0 0);
-    --color-primary: oklch(77.84% 0.086 264.45);
-    --color-primary-foreground: oklch(25.35% 0.038 264.45);
-    --color-secondary: oklch(22.7% 0.006 285.82);
-    --color-secondary-foreground: oklch(98% 0 0);
-    --color-muted: oklch(22.7% 0.006 285.82);
-    --color-muted-foreground: oklch(64.9% 0.012 285.82);
-    --color-accent: oklch(22.7% 0.006 285.82);
-    --color-accent-foreground: oklch(98% 0 0);
-    --color-destructive: oklch(59.2% 0.227 27.33);
-    --color-destructive-foreground: oklch(98% 0 0);
-    --color-border: oklch(22.7% 0.006 285.82);
-    --color-input: oklch(22.7% 0.006 285.82);
-    --color-ring: oklch(77.84% 0.086 264.45);
+    /* Dark mode: Graphite blue with clear elevation hierarchy */
+    --color-background: oklch(14% 0.012 264);    /* Soft graphite #111827 */
+    --color-foreground: oklch(95% 0.005 264);    /* Clean white #F1F5F9 */
 
-    --color-chart-1: oklch(65% 0.15 145);
-    --color-chart-2: oklch(75% 0.15 210);
-    --color-chart-3: oklch(70% 0.15 330);
-    --color-chart-4: oklch(80% 0.12 60);
-    --color-chart-5: oklch(73% 0.18 280);
+    /* Cards: Clear elevation above background */
+    --color-card: oklch(18.5% 0.018 264);        /* Elevated #161E2E with depth */
+    --color-card-foreground: oklch(95% 0.005 264);
+    --color-popover: oklch(18.5% 0.018 264);
+    --color-popover-foreground: oklch(95% 0.005 264);
+
+    /* Primary: Single strong blue accent #3B82F6 */
+    --color-primary: oklch(58% 0.21 264);
+    --color-primary-foreground: oklch(100% 0 0);
+
+    /* Secondary: Subtle elevation for inactive states */
+    --color-secondary: oklch(22% 0.02 264);
+    --color-secondary-foreground: oklch(85% 0.01 264);  /* #CBD5E1 muted text */
+
+    /* Muted: Background for inactive tabs/sections */
+    --color-muted: oklch(20% 0.015 264);
+    --color-muted-foreground: oklch(65% 0.012 264);  /* #94A3B8 subtext */
+
+    /* Accent: Same as primary for consistency */
+    --color-accent: oklch(58% 0.21 264);
+    --color-accent-foreground: oklch(100% 0 0);
+
+    /* Destructive: Red for alerts */
+    --color-destructive: oklch(60% 0.22 27);
+    --color-destructive-foreground: oklch(98% 0 0);
+
+    /* Success: Green for completion */
+    --color-success: oklch(62% 0.16 145);
+    --color-success-foreground: oklch(100% 0 0);
+
+    /* Borders: Subtle separation with alpha */
+    --color-border: oklch(30% 0.02 264 / 0.4);   /* rgba(255,255,255,0.06) equivalent */
+    --color-input: oklch(20% 0.015 264);
+    --color-ring: oklch(58% 0.21 264);
+
+    /* Chart colors - Professional hierarchy */
+    --color-chart-1: oklch(58% 0.21 264);   /* Primary Blue */
+    --color-chart-2: oklch(65% 0.18 264);   /* Lighter Blue */
+    --color-chart-3: oklch(62% 0.16 145);   /* Success Green */
+    --color-chart-4: oklch(72% 0.14 85);    /* Amber */
+    --color-chart-5: oklch(60% 0.14 290);   /* Purple accent */
   }
 }
 
@@ -70,9 +104,58 @@
   * {
     @apply border-border;
   }
+
+  /* Global typography hierarchy */
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground text-base leading-relaxed antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1 {
+    @apply text-4xl font-bold tracking-tight leading-tight;
+  }
+
+  h2 {
+    @apply text-lg font-semibold tracking-tight;
+  }
+
+  h3 {
+    @apply text-base font-semibold;
+  }
+
+  p {
+    @apply text-base leading-relaxed;
+  }
+
+  small {
+    @apply text-xs font-medium opacity-50;
+  }
+
+  /* Dark mode gradient canvas */
+  @media (prefers-color-scheme: dark) {
+    body {
+      @apply bg-gradient-to-b from-slate-950 via-slate-950/90 to-slate-900;
+    }
+
+    h1 {
+      @apply text-white;
+    }
+
+    h2 {
+      @apply text-white;
+    }
+
+    h3 {
+      @apply text-white;
+    }
+
+    p {
+      @apply text-white/85;
+    }
+
+    small {
+      @apply text-white/50;
+    }
   }
 }
 
@@ -82,12 +165,193 @@
     text-wrap: balance;
   }
 
-  /* Workspace-specific patterns */
+  /* Enterprise typography tokens - strict hierarchy */
+  .text-page-title {
+    @apply text-4xl font-bold tracking-tight leading-tight text-white;
+  }
+
+  .text-section-title {
+    @apply text-lg font-semibold tracking-tight text-white;
+  }
+
+  .text-card-title {
+    @apply text-base font-semibold text-white;
+  }
+
+  .text-metric {
+    @apply text-3xl font-bold tracking-tight text-white;
+  }
+
+  .text-body {
+    @apply text-base leading-relaxed text-white/85;
+  }
+
+  .text-meta {
+    @apply text-xs font-medium text-white/50;
+  }
+
+  /* Enhanced card elevation with depth */
   .workspace-card {
-    @apply bg-card border border-border/50 rounded-lg shadow-sm;
+    @apply bg-card border border-border rounded-lg;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Dark mode card - deeper shadow + subtle border */
+  @media (prefers-color-scheme: dark) {
+    .workspace-card {
+      @apply bg-slate-900/40 border-white/5;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
   }
 
   .workspace-section {
-    @apply border-b border-border/50 pb-6 mb-6 last:border-0 last:pb-0 last:mb-0;
+    @apply border-b pb-6 mb-6 last:border-0 last:pb-0 last:mb-0;
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Sidebar surface */
+  .sidebar-surface {
+    @apply bg-slate-950/80 border-r border-white/5 backdrop-blur;
+  }
+
+  /* Navigation tab states - Light mode */
+  .nav-tab-inactive {
+    @apply relative text-muted-foreground transition-all duration-200 rounded-lg px-3 py-2;
+  }
+
+  .nav-tab-inactive:hover {
+    @apply bg-primary/8 text-foreground;
+  }
+
+  .nav-tab-active {
+    @apply relative bg-primary/12 text-foreground rounded-lg border-l-4 border-primary px-3 py-2 font-semibold;
+  }
+
+  /* Navigation tab states - Dark mode overrides */
+  @media (prefers-color-scheme: dark) {
+    .nav-tab-inactive {
+      @apply text-slate-300/80;
+    }
+
+    .nav-tab-inactive:hover {
+      @apply bg-white/5 text-slate-100;
+    }
+
+    .nav-tab-active {
+      @apply bg-blue-500/10 ring-1 ring-blue-400/20 text-slate-100 border-l-0;
+    }
+
+    /* Left indicator bar for active state */
+    .nav-tab-active::before {
+      content: '';
+      @apply absolute left-0 top-2 bottom-2 w-1 rounded-full bg-blue-500;
+    }
+  }
+
+  /* Section heading hierarchy */
+  .section-header {
+    @apply text-foreground font-semibold;
+  }
+
+  .section-subtext {
+    @apply text-muted-foreground text-sm;
+  }
+
+  /* Accent highlight - use sparingly */
+  .accent-highlight {
+    @apply text-primary font-medium;
+  }
+
+  /* Status badges with proper contrast */
+  .status-complete {
+    @apply bg-success/12 text-success border border-success/20 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .status-pending {
+    @apply bg-accent/12 text-accent border border-accent/20 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .status-overdue {
+    @apply bg-destructive/12 text-destructive border border-destructive/20 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  /* Course player lesson navigation panel */
+  .lesson-nav-panel {
+    @apply sticky top-6 h-[calc(100vh-3rem)] overflow-auto rounded-2xl bg-slate-950/60 border border-white/5 p-3;
+  }
+
+  /* Lesson item states */
+  .lesson-item-inactive {
+    @apply rounded-xl px-3 py-2 text-sm text-slate-300/80 transition-colors duration-200;
+  }
+
+  .lesson-item-inactive:hover {
+    @apply bg-white/5 text-slate-100;
+  }
+
+  .lesson-item-active {
+    @apply rounded-xl px-3 py-2 text-sm font-semibold text-slate-100 bg-blue-500/10 ring-1 ring-blue-400/20;
+    position: relative;
+  }
+
+  /* Optional left indicator for active lesson */
+  .lesson-item-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    border-radius: 9999px;
+    background: #3b82f6;
+  }
+
+  /* Course card styling */
+  .course-card {
+    @apply rounded-2xl bg-slate-900/40 border border-white/5 transition-all duration-200;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  }
+
+  .course-card:hover {
+    @apply border-blue-400/20 translate-y-[-2px];
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  }
+
+  /* Content styling for lesson blocks - without prose plugin */
+  .lesson-content {
+    @apply max-w-none text-slate-200/90 leading-relaxed;
+  }
+
+  .lesson-content h1,
+  .lesson-content h2,
+  .lesson-content h3,
+  .lesson-content h4 {
+    @apply text-slate-50 font-bold mt-6 mb-3;
+  }
+
+  .lesson-content p {
+    @apply text-slate-200/90 leading-relaxed mb-4;
+  }
+
+  .lesson-content a {
+    @apply text-blue-400 no-underline hover:underline;
+  }
+
+  .lesson-content strong {
+    @apply text-slate-100 font-semibold;
+  }
+
+  .lesson-content code {
+    @apply text-blue-300 bg-slate-800/50 px-1.5 py-0.5 rounded text-sm;
+  }
+
+  .lesson-content ul,
+  .lesson-content ol {
+    @apply text-slate-200/90 space-y-2 ml-6 mb-4;
+  }
+
+  .lesson-content li {
+    @apply text-slate-200/90;
   }
 }

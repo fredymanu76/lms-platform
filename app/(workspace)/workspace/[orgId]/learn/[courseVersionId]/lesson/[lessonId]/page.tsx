@@ -101,97 +101,91 @@ export default async function LessonViewerPage({
   const course = (courseVersion as any).courses
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="border-b border-border/40 bg-card">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href={`/workspace/${orgId}/learn/${courseVersionId}`}>
-                <Button variant="ghost" size="sm">
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Back
-                </Button>
-              </Link>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Badge variant="secondary">{course?.category || "General"}</Badge>
-                  {completion && (
-                    <Badge variant="default" className="bg-green-600">Completed</Badge>
-                  )}
-                </div>
-                <h1 className="text-xl font-bold">{course?.title}</h1>
-              </div>
+      <div className="mb-6">
+        <div className="flex items-center gap-4">
+          <Link href={`/workspace/${orgId}/learn/${courseVersionId}`}>
+            <Button variant="ghost" size="sm">
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Course Overview
+            </Button>
+          </Link>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant="secondary">{course?.category || "General"}</Badge>
+              {completion && (
+                <Badge variant="default" className="bg-green-600">Completed</Badge>
+              )}
             </div>
+            <h1 className="section-header text-2xl">{course?.title}</h1>
           </div>
         </div>
       </div>
 
-      <div className="flex">
+      <div className="flex gap-6">
         {/* Sidebar Navigation */}
-        <aside className="w-80 border-r border-border/40 bg-card min-h-[calc(100vh-73px)] overflow-y-auto">
-          <div className="p-4">
-            <h2 className="font-semibold mb-4 flex items-center gap-2">
-              <BookOpen className="h-4 w-4" />
-              Course Content
-            </h2>
-            <div className="space-y-4">
-              {sortedModules.map((module: any, moduleIndex: number) => (
-                <div key={module.id}>
-                  <div className="font-medium text-sm mb-2">
-                    Module {moduleIndex + 1}: {module.title}
-                  </div>
-                  <div className="space-y-1">
-                    {module.lessons.map((l: any) => {
-                      const isActive = l.id === lessonId
-                      return (
-                        <Link key={l.id} href={`/workspace/${orgId}/learn/${courseVersionId}/lesson/${l.id}`}>
-                          <button className={`w-full text-left px-3 py-2 rounded-md transition-colors flex items-start gap-2 text-sm ${
-                            isActive ? 'bg-primary text-primary-foreground' : 'hover:bg-muted/50'
-                          }`}>
-                            {isActive ? (
-                              <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                            ) : (
-                              <Circle className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground" />
-                            )}
-                            <div className="flex-1 min-w-0">
-                              <p className="truncate">{l.title}</p>
-                              <p className={`text-xs ${isActive ? 'opacity-90' : 'text-muted-foreground'}`}>
-                                {l.lesson_type} • {l.estimated_minutes || 5} min
-                              </p>
-                            </div>
-                          </button>
-                        </Link>
-                      )
-                    })}
-                  </div>
+        <aside className="w-80 lesson-nav-panel">
+          <h2 className="font-semibold mb-4 flex items-center gap-2 text-slate-100">
+            <BookOpen className="h-4 w-4" />
+            Course Content
+          </h2>
+          <div className="space-y-4">
+            {sortedModules.map((module: any, moduleIndex: number) => (
+              <div key={module.id}>
+                <div className="font-medium text-sm mb-2 text-slate-200">
+                  Module {moduleIndex + 1}: {module.title}
                 </div>
-              ))}
-            </div>
+                <div className="space-y-1">
+                  {module.lessons.map((l: any) => {
+                    const isActive = l.id === lessonId
+                    return (
+                      <Link key={l.id} href={`/workspace/${orgId}/learn/${courseVersionId}/lesson/${l.id}`}>
+                        <button className={`w-full text-left flex items-start gap-2 ${
+                          isActive ? 'lesson-item-active' : 'lesson-item-inactive'
+                        }`}>
+                          {isActive ? (
+                            <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                          ) : (
+                            <Circle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="truncate">{l.title}</p>
+                            <p className="text-xs opacity-70">
+                              {l.lesson_type} • {l.estimated_minutes || 5} min
+                            </p>
+                          </div>
+                        </button>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </aside>
 
         {/* Main Content */}
         <main className="flex-1 flex flex-col">
-          <div className="flex-1 overflow-y-auto p-8">
-            <div className="max-w-3xl mx-auto">
+          <div className="flex-1 overflow-y-auto">
+            <div className="max-w-4xl">
               {/* Lesson Header */}
               <div className="mb-8">
-                <p className="text-sm text-muted-foreground mb-2">
+                <p className="section-subtext mb-2">
                   {(lesson as any).modules?.title}
                 </p>
-                <h2 className="text-3xl font-bold mb-2">{lesson.title}</h2>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <h2 className="section-header text-3xl mb-3">{lesson.title}</h2>
+                <div className="flex items-center gap-4 text-sm text-slate-400">
                   <Badge variant="outline">{lesson.lesson_type}</Badge>
                   <span>~{lesson.estimated_minutes || 5} minutes</span>
                 </div>
               </div>
 
               {/* Lesson Content Blocks */}
-              <div className="space-y-6">
+              <div className="lesson-content space-y-6">
                 {!blocks || blocks.length === 0 ? (
-                  <Card className="border-border/50">
-                    <CardContent className="py-12 text-center text-muted-foreground">
+                  <Card className="workspace-card">
+                    <CardContent className="py-12 text-center text-slate-400">
                       <p>No content available for this lesson yet.</p>
                     </CardContent>
                   </Card>
@@ -205,8 +199,8 @@ export default async function LessonViewerPage({
           </div>
 
           {/* Navigation Footer */}
-          <div className="border-t border-border/40 bg-card p-4">
-            <div className="max-w-3xl mx-auto flex items-center justify-between">
+          <div className="border-t border-white/5 bg-slate-950/60 backdrop-blur p-4 mt-8">
+            <div className="max-w-4xl flex items-center justify-between">
               {prevLesson ? (
                 <Link href={`/workspace/${orgId}/learn/${courseVersionId}/lesson/${prevLesson.id}`}>
                   <Button variant="outline">
@@ -218,11 +212,11 @@ export default async function LessonViewerPage({
                 <div />
               )}
 
-              {!completion && (
+              {!completion && !nextLesson && (
                 <form action={`/api/course/complete`} method="POST">
                   <input type="hidden" name="orgId" value={orgId} />
                   <input type="hidden" name="courseVersionId" value={courseVersionId} />
-                  <Button type="submit" variant="default" className="bg-green-600 hover:bg-green-700">
+                  <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
                     <CheckCircle2 className="h-4 w-4 mr-2" />
                     Mark Complete
                   </Button>
@@ -260,14 +254,14 @@ function LessonBlock({ block }: { block: any }) {
   switch (block.block_type) {
     case 'text':
       return (
-        <div className="prose prose-slate dark:prose-invert max-w-none">
+        <div className="max-w-none text-slate-200/90 leading-relaxed">
           <div dangerouslySetInnerHTML={{ __html: content.html || content.text || '' }} />
         </div>
       )
 
     case 'heading':
       return (
-        <h3 className="text-2xl font-bold mt-8 mb-4">
+        <h3 className="text-2xl font-bold mt-8 mb-4 text-slate-50">
           {content.text}
         </h3>
       )
@@ -289,11 +283,11 @@ function LessonBlock({ block }: { block: any }) {
       }
 
       return (
-        <Card className="border-border/50">
+        <Card className="workspace-card overflow-hidden">
           <CardContent className="p-0">
             {content.title && (
-              <div className="p-4 border-b">
-                <h3 className="font-semibold">{content.title}</h3>
+              <div className="p-4 border-b border-white/5">
+                <h3 className="font-semibold text-slate-100">{content.title}</h3>
               </div>
             )}
             <div className="aspect-video bg-black">
@@ -306,7 +300,7 @@ function LessonBlock({ block }: { block: any }) {
                 />
               ) : (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
-                  Video unavailable
+                  <span className="text-slate-400">Video unavailable</span>
                 </div>
               )}
             </div>
@@ -317,21 +311,21 @@ function LessonBlock({ block }: { block: any }) {
     case 'callout':
       return (
         <Card className={`border-l-4 ${
-          content.type === 'warning' ? 'border-l-yellow-500 bg-yellow-50 dark:bg-yellow-950/20' :
-          content.type === 'info' ? 'border-l-blue-500 bg-blue-50 dark:bg-blue-950/20' :
-          'border-l-green-500 bg-green-50 dark:bg-green-950/20'
-        }`}>
+          content.type === 'warning' ? 'border-l-yellow-500 bg-yellow-950/20' :
+          content.type === 'info' ? 'border-l-blue-500 bg-blue-950/20' :
+          'border-l-green-500 bg-green-950/20'
+        } border-white/5`}>
           <CardContent className="py-4">
-            <p className="text-sm">{content.text}</p>
+            <p className="text-sm text-slate-200">{content.text}</p>
           </CardContent>
         </Card>
       )
 
     case 'list':
       return (
-        <Card className="border-border/50">
+        <Card className="workspace-card">
           <CardContent className="py-4">
-            <ul className="list-disc list-inside space-y-2">
+            <ul className="list-disc list-inside space-y-2 text-slate-200">
               {content.items?.map((item: string, i: number) => (
                 <li key={i}>{item}</li>
               ))}
@@ -342,15 +336,15 @@ function LessonBlock({ block }: { block: any }) {
 
     case 'file':
       return (
-        <Card className="border-border/50">
+        <Card className="workspace-card">
           <CardContent className="py-4">
-            <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+            <div className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg">
               <div className="flex items-center gap-3">
-                <FileText className="h-6 w-6 text-primary" />
+                <FileText className="h-6 w-6 text-blue-400" />
                 <div>
-                  <p className="font-medium">{content.name || 'Course Material'}</p>
+                  <p className="font-medium text-slate-100">{content.name || 'Course Material'}</p>
                   {content.size && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-slate-400">
                       {(content.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   )}
@@ -369,9 +363,9 @@ function LessonBlock({ block }: { block: any }) {
 
     default:
       return (
-        <Card className="border-border/50">
+        <Card className="workspace-card">
           <CardContent className="py-4">
-            <pre className="text-sm text-muted-foreground overflow-auto">
+            <pre className="text-sm text-slate-400 overflow-auto">
               {JSON.stringify(content, null, 2)}
             </pre>
           </CardContent>

@@ -60,34 +60,30 @@ export default async function CourseCataloguePage({
   const categories = Array.from(new Set(coursesWithVersions.map(c => c.category).filter(Boolean)))
 
   return (
-    <div className="min-h-screen bg-muted/20">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="border-b border-border/40 bg-background">
-        <div className="container mx-auto px-6 py-6">
-          <h1 className="text-3xl font-bold">Course Catalogue</h1>
-          <p className="text-muted-foreground mt-1">
-            Browse our library of compliance and regulatory training
-          </p>
-        </div>
+      <div className="mb-8">
+        <h1 className="section-header text-3xl">Course Catalogue</h1>
+        <p className="section-subtext mt-2">
+          Browse our library of compliance and regulatory training
+        </p>
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="space-y-6">
         {/* Filters */}
-        <div className="mb-6">
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm">All Courses</Button>
-            {categories.map((category) => (
-              <Button key={category} variant="ghost" size="sm">
-                {category}
-              </Button>
-            ))}
-          </div>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm">All Courses</Button>
+          {categories.map((category) => (
+            <Button key={category} variant="ghost" size="sm">
+              {category}
+            </Button>
+          ))}
         </div>
 
         {/* Course Grid */}
         {coursesWithVersions.length === 0 ? (
-          <Card className="border-border/50">
+          <Card className="workspace-card">
             <CardContent className="py-12 text-center text-muted-foreground">
               <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p className="text-lg font-medium mb-1">No courses available yet</p>
@@ -101,7 +97,7 @@ export default async function CourseCataloguePage({
               const isGlobal = !course.org_id
 
               return (
-                <Card key={course.id} className="border-border/50 hover:border-primary/50 transition-colors flex flex-col">
+                <Card key={course.id} className="course-card flex flex-col">
                   <CardHeader>
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <Badge variant={isGlobal ? "secondary" : "outline"}>
@@ -135,7 +131,10 @@ export default async function CourseCataloguePage({
                       )}
                     </div>
                     <Link href={`/workspace/${orgId}/learn/${course.versionId}`}>
-                      <Button className="w-full" variant={isCompleted ? "outline" : "default"}>
+                      <Button
+                        className="w-full"
+                        variant={isCompleted ? "outline" : "default"}
+                      >
                         {isCompleted ? "Review Course" : "Start Course"}
                       </Button>
                     </Link>

@@ -96,84 +96,78 @@ export default async function CoursePlayerPage({
   const course = (courseVersion as any).courses
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Course Header */}
-      <div className="border-b border-border/40 bg-card">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href={`/workspace/${orgId}/catalogue`}>
-                <Button variant="ghost" size="sm">
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Back
-                </Button>
-              </Link>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Badge variant="secondary">{course?.category || "General"}</Badge>
-                  {completion && (
-                    <Badge variant="default" className="bg-green-600">
-                      Completed
-                    </Badge>
-                  )}
-                </div>
-                <h1 className="text-xl font-bold">{course?.title}</h1>
-              </div>
+      <div className="mb-6">
+        <div className="flex items-center gap-4">
+          <Link href={`/workspace/${orgId}/catalogue`}>
+            <Button variant="ghost" size="sm">
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Back to Catalogue
+            </Button>
+          </Link>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant="secondary">{course?.category || "General"}</Badge>
+              {completion && (
+                <Badge variant="default" className="bg-green-600">
+                  Completed
+                </Badge>
+              )}
             </div>
+            <h1 className="section-header text-2xl">{course?.title}</h1>
           </div>
         </div>
       </div>
 
       {/* Split View: Sidebar + Content */}
-      <div className="flex">
+      <div className="flex gap-6">
         {/* Sidebar - Course Navigation */}
-        <aside className="w-80 border-r border-border/40 bg-card min-h-[calc(100vh-73px)] overflow-y-auto">
-          <div className="p-4">
-            <h2 className="font-semibold mb-4 flex items-center gap-2">
-              <BookOpen className="h-4 w-4" />
-              Course Content
-            </h2>
+        <aside className="w-80 lesson-nav-panel">
+          <h2 className="font-semibold mb-4 flex items-center gap-2 text-slate-100">
+            <BookOpen className="h-4 w-4" />
+            Course Content
+          </h2>
 
-            {sortedModules.length === 0 ? (
-              <p className="text-sm text-muted-foreground py-4">
-                No content available yet
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {sortedModules.map((module: any, moduleIndex: number) => (
-                  <div key={module.id}>
-                    <div className="font-medium text-sm mb-2">
-                      Module {moduleIndex + 1}: {module.title}
-                    </div>
-                    <div className="space-y-1">
-                      {module.lessons.map((lesson: any, lessonIndex: number) => (
-                        <Link
-                          key={lesson.id}
-                          href={`/workspace/${orgId}/learn/${courseVersionId}/lesson/${lesson.id}`}
-                        >
-                          <button className="w-full text-left px-3 py-2 rounded-md hover:bg-muted/50 transition-colors flex items-start gap-2 text-sm">
-                            <Circle className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground" />
-                            <div className="flex-1 min-w-0">
-                              <p className="truncate">{lesson.title}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {lesson.lesson_type} • {lesson.estimated_minutes || 5} min
-                              </p>
-                            </div>
-                          </button>
-                        </Link>
-                      ))}
-                    </div>
+          {sortedModules.length === 0 ? (
+            <p className="text-sm text-slate-400 py-4">
+              No content available yet
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {sortedModules.map((module: any, moduleIndex: number) => (
+                <div key={module.id}>
+                  <div className="font-medium text-sm mb-2 text-slate-200">
+                    Module {moduleIndex + 1}: {module.title}
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                  <div className="space-y-1">
+                    {module.lessons.map((lesson: any) => (
+                      <Link
+                        key={lesson.id}
+                        href={`/workspace/${orgId}/learn/${courseVersionId}/lesson/${lesson.id}`}
+                      >
+                        <button className="w-full text-left lesson-item-inactive flex items-start gap-2">
+                          <Circle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="truncate">{lesson.title}</p>
+                            <p className="text-xs opacity-70">
+                              {lesson.lesson_type} • {lesson.estimated_minutes || 5} min
+                            </p>
+                          </div>
+                        </button>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-8">
-          <div className="max-w-3xl mx-auto">
-            <Card className="border-border/50">
+        <main className="flex-1">
+          <div className="max-w-3xl">
+            <Card className="workspace-card">
               <CardContent className="py-12">
                 <div className="text-center">
                   <h2 className="text-2xl font-bold mb-4">
@@ -234,7 +228,7 @@ export default async function CoursePlayerPage({
 
                       {firstLesson ? (
                         <Link href={`/workspace/${orgId}/learn/${courseVersionId}/lesson/${firstLesson.id}`}>
-                          <Button size="lg" className="mt-6">
+                          <Button size="lg" className="mt-6 bg-primary hover:bg-primary/90">
                             Start Course
                             <ChevronRight className="h-4 w-4 ml-1" />
                           </Button>

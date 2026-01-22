@@ -2,7 +2,7 @@ import { supabaseServer } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Plus, Edit, Eye } from "lucide-react"
+import { BookOpen, Plus, Edit, Eye, BookTemplate } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
@@ -73,12 +73,20 @@ export default async function AuthorStudioPage({
                 Create and manage your organization's training content
               </p>
             </div>
-            <Link href={`/workspace/${orgId}/author/new`}>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                New Course
-              </Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link href={`/workspace/${orgId}/author/templates`}>
+                <Button variant="outline">
+                  <BookTemplate className="h-4 w-4 mr-2" />
+                  Templates
+                </Button>
+              </Link>
+              <Link href={`/workspace/${orgId}/author/new`}>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Course
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

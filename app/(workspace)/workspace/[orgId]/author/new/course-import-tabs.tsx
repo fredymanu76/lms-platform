@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Sparkles, Upload, FileText, BookOpen, Loader2, AlertCircle } from "lucide-react"
+import { Sparkles, Upload, FileText, BookOpen, Loader2, AlertCircle, BookTemplate } from "lucide-react"
 import { AICourseBuilder } from "./ai-course-builder"
 import { useRouter } from "next/navigation"
+import { TemplateSelector } from "@/components/workspace/template-selector"
 
 interface CourseImportTabsProps {
   orgId: string
@@ -19,9 +20,66 @@ interface CourseImportTabsProps {
 }
 
 export function CourseImportTabs({ orgId, organizationName, sector }: CourseImportTabsProps) {
+  const [templates, setTemplates] = useState([])
+  const [isLoadingTemplates, setIsLoadingTemplates] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    fetchTemplates()
+  }, [orgId])
+
+  const fetchTemplates = async () => {
+    try {
+      const response = await fetch(`/api/courses/templates?orgId=${orgId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setTemplates(data.templates || [])
+      }
+    } catch (error) {
+      console.error('Failed to load templates:', error)
+    } finally {
+      setIsLoadingTemplates(false)
+    }
+  }
+
+  const handleTemplateSelect = async (template: any) => {
+    try {
+      const response = await fetch('/api/courses/from-template', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orgId,
+          templateId: template.id,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        router.push(`/workspace/${orgId}/author/edit/${data.courseId}`)
+      } else {
+        console.error('Failed to create course from template:', data.error)
+        alert('Failed to create course from template. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error creating course from template:', error)
+      alert('An unexpected error occurred. Please try again.')
+    }
+  }
+
+  const handleCreateFromScratch = () => {
+    // Switch to manual create tab
+    const manualTab = document.querySelector('[value="manual-create"]') as HTMLElement
+    manualTab?.click()
+  }
+
   return (
-    <Tabs defaultValue="ai" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 mb-6">
+    <Tabs defaultValue="templates" className="w-full">
+      <TabsList className="grid w-full grid-cols-4 mb-6">
+        <TabsTrigger value="templates" className="flex items-center gap-2">
+          <BookTemplate className="h-4 w-4" />
+          Templates
+        </TabsTrigger>
         <TabsTrigger value="ai" className="flex items-center gap-2">
           <Sparkles className="h-4 w-4" />
           AI Import
@@ -35,6 +93,24 @@ export function CourseImportTabs({ orgId, organizationName, sector }: CourseImpo
           Manual Create
         </TabsTrigger>
       </TabsList>
+
+      {/* Templates Tab */}
+      <TabsContent value="templates" className="mt-0">
+        {isLoadingTemplates ? (
+          <Card className="border-border/50">
+            <CardContent className="py-12 flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </CardContent>
+          </Card>
+        ) : (
+          <TemplateSelector
+            orgId={orgId}
+            templates={templates}
+            onSelectTemplate={handleTemplateSelect}
+            onCreateFromScratch={handleCreateFromScratch}
+          />
+        )}
+      </TabsContent>
 
       {/* AI Import Tab */}
       <TabsContent value="ai" className="mt-0">

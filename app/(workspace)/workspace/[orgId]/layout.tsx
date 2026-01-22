@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { supabaseServer } from "@/lib/supabase/server"
-import { Shield, LayoutDashboard, BookOpen, GraduationCap, FileText, Settings, Users, BarChart3, PenTool, ClipboardList } from "lucide-react"
+import { Shield, LayoutDashboard, BookOpen, GraduationCap, FileText, Settings, Users, BarChart3, PenTool, ClipboardList, Video } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
@@ -13,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Toaster } from "@/components/ui/sonner"
+import { NavLink } from "@/components/workspace/nav-link"
+import { KeyboardShortcutsProvider } from "@/components/workspace/keyboard-shortcuts-provider"
 
 export default async function WorkspaceLayout({
   children,
@@ -70,7 +72,7 @@ export default async function WorkspaceLayout({
   return (
     <div className="min-h-screen bg-background">
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-border/40 bg-card">
+      <aside className="fixed left-0 top-0 z-40 h-screen w-64 sidebar-surface">
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex h-16 items-center gap-2 border-b border-border/40 px-6">
@@ -88,65 +90,21 @@ export default async function WorkspaceLayout({
 
           {/* Navigation */}
           <nav className="flex-1 space-y-1 p-4">
-            <Link href={`/workspace/${orgId}`}>
-              <Button variant="ghost" className="w-full justify-start gap-2">
-                <LayoutDashboard className="h-4 w-4" />
-                Dashboard
-              </Button>
-            </Link>
-            <Link href={`/workspace/${orgId}/learn`}>
-              <Button variant="ghost" className="w-full justify-start gap-2">
-                <GraduationCap className="h-4 w-4" />
-                My Learning
-              </Button>
-            </Link>
-            <Link href={`/workspace/${orgId}/catalogue`}>
-              <Button variant="ghost" className="w-full justify-start gap-2">
-                <BookOpen className="h-4 w-4" />
-                Course Catalogue
-              </Button>
-            </Link>
+            <NavLink href={`/workspace/${orgId}`} icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
+            <NavLink href={`/workspace/${orgId}/learn`} icon={<GraduationCap className="h-4 w-4" />} label="My Learning" />
+            <NavLink href={`/workspace/${orgId}/catalogue`} icon={<BookOpen className="h-4 w-4" />} label="Course Catalogue" />
+            <NavLink href={`/workspace/${orgId}/classroom`} icon={<Video className="h-4 w-4" />} label="Virtual Classroom" />
             {isAdmin && (
               <>
                 <div className="pt-4 pb-2">
                   <p className="px-3 text-xs font-semibold text-muted-foreground uppercase">Admin</p>
                 </div>
-                <Link href={`/workspace/${orgId}/author`}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
-                    <PenTool className="h-4 w-4" />
-                    Author Studio
-                  </Button>
-                </Link>
-                <Link href={`/workspace/${orgId}/team`}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
-                    <Users className="h-4 w-4" />
-                    Team
-                  </Button>
-                </Link>
-                <Link href={`/workspace/${orgId}/admin/assignments`}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
-                    <ClipboardList className="h-4 w-4" />
-                    Assignments
-                  </Button>
-                </Link>
-                <Link href={`/workspace/${orgId}/compliance`}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
-                    <BarChart3 className="h-4 w-4" />
-                    Compliance
-                  </Button>
-                </Link>
-                <Link href={`/workspace/${orgId}/policies`}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
-                    <FileText className="h-4 w-4" />
-                    Policies
-                  </Button>
-                </Link>
-                <Link href={`/workspace/${orgId}/settings`}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
-                    <Settings className="h-4 w-4" />
-                    Settings
-                  </Button>
-                </Link>
+                <NavLink href={`/workspace/${orgId}/author`} icon={<PenTool className="h-4 w-4" />} label="Author Studio" />
+                <NavLink href={`/workspace/${orgId}/team`} icon={<Users className="h-4 w-4" />} label="Team" />
+                <NavLink href={`/workspace/${orgId}/admin/assignments`} icon={<ClipboardList className="h-4 w-4" />} label="Assignments" />
+                <NavLink href={`/workspace/${orgId}/compliance`} icon={<BarChart3 className="h-4 w-4" />} label="Compliance" />
+                <NavLink href={`/workspace/${orgId}/policies`} icon={<FileText className="h-4 w-4" />} label="Policies" />
+                <NavLink href={`/workspace/${orgId}/settings`} icon={<Settings className="h-4 w-4" />} label="Settings" />
               </>
             )}
           </nav>
@@ -180,7 +138,9 @@ export default async function WorkspaceLayout({
 
       {/* Main Content */}
       <div className="pl-64">
-        <main className="min-h-screen">{children}</main>
+        <KeyboardShortcutsProvider orgId={orgId}>
+          <main className="min-h-screen p-8">{children}</main>
+        </KeyboardShortcutsProvider>
         <Toaster />
       </div>
     </div>
